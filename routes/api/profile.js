@@ -41,6 +41,34 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    const {
+      company,
+      location,
+      website,
+      bio,
+      skills,
+      status,
+      githubusername,
+      youtube,
+      twitter,
+      instagram,
+      linkedin,
+      facebook
+    } = req.body;
+
+    const profileFields = {};
+    profileFields.user = req.user.id;
+    if (company) profileFields.company = company;
+    if (location) profileFields.location = location;
+    if (website) profileFields.website = website;
+    if (bio) profileFields.bio = bio;
+    if (status) profileFields.status = status;
+    if (githubusername) profileFields.githubusername = githubusername;
+    if (skills) {
+      profileFields.skills = skills.split(",").map(skill => skill.trim());
+    }
+    console.log(profileFields.skills);
+    res.send("Hello");
   }
 );
 
