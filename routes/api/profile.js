@@ -36,7 +36,7 @@ router.post(
         .isEmpty()
     ]
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -77,19 +77,22 @@ router.post(
     if (facebook) profileFields.scoial.facebook = facebook;
 
     try {
-      let profile = Profile.findOne({user: req.user.id});
-      if(profile){
+      let profile = Profile.findOne({ user: req.user.id });
+      if (profile) {
         profile = await Profile.findByIdAndUpdate(
-          {user: req.user.id},
-          {$set: profileFields},
-          {new: true}
+          { user: req.user.id },
+          { $set: profileFields },
+          { new: true }
         );
+        return res.json(profile);
       }
+      profile = new Profile(profileFields);
+      await Profile.save();
+      res.json(profile);
     } catch (err) {
       console.log(err);
-      res.status(500).send('Server Error');
+      res.status(500).send("Server Error");
     }
-   
   }
 );
 
