@@ -76,9 +76,20 @@ router.post(
     if (linkedin) profileFields.scoial.linkedin = linkedin;
     if (facebook) profileFields.scoial.facebook = facebook;
 
-    console.log(profileFields.social.twitter);
-
-    res.send("Hello");
+    try {
+      let profile = Profile.findOne({user: req.user.id});
+      if(profile){
+        profile = await Profile.findByIdAndUpdate(
+          {user: req.user.id},
+          {$set: profileFields},
+          {new: true}
+        );
+      }
+    } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+    }
+   
   }
 );
 
